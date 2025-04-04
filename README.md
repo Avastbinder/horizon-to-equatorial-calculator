@@ -6,27 +6,21 @@ Useful for Astronomy, such as getting the position of an object from the sky and
 
 There seems to be a lack of information online regarding this type of conversion, so I hope this will be helpful to anyone who wants to do this type of conversion.
 
-{Provide a link to your YouTube demonstration. It should be a 4-5 minute demo of the software running and a walkthrough of the code.}
-
-[Software Demo Video](http://youtube.link.goes.here)
+[Software Demo Video](https://youtu.be/N5IOR7gEAng)
 
 # Development Environment
 
-{Describe the tools that you used to develop the software}
+Written on Visual Studio Code, and a very useful tool in the making of this application was [Stellarium](https://stellarium.org/), which allowed me to test if my calculations were accurate.
 
-{Describe the programming language that you used and any libraries.}
+Written in Rust, and heavily uses the Iced crate which handles the user interface.
 
 # Useful Websites
 
-{Make a list of websites that you found helpful in this project}
-
-- [Web Site Name](http://url.link.goes.here)
-- [Web Site Name](http://url.link.goes.here)
+- [Positional Astronomy: Conversion between horizontal and equatorial systems](https://sceweb.sce.uhcl.edu/helm/WEB-Positional%20Astronomy/Tutorial/Conversion/Conversion.html)
+- [MatLab program that performs this calculation](https://www.mathworks.com/matlabcentral/fileexchange/24581-convert-azimuth-and-elevation-to-right-ascension-and-declination)
 
 # Future Work
 
-{Make a list of things that you need to fix, improve, and add in the future.}
-
-- Item 1
-- Item 2
-- Item 3
+- Make input fields easier to understand, maybe add notes to clarify what needs to be entered
+- Make more accurate (decently accurate at this moment, but could always be better)
+- Automate some of the input parameters, for example the latitude and longitude of observation
