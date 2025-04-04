@@ -69,9 +69,11 @@ impl State {
             }
     
             Message::FetchEquatorial => {
+                // For user input, strings are much more user friendly. This function converts the variables to their correct type.
                 let (latitude, longitude, altitude, azimuth, year, month, day, hour, minute, second) = 
                 to_correct(&self.latitude, &self.longitude, &self.altitude, &self.azimuth, &self.year, &self.month, &self.day, &self.hour, &self.minute, &self.second);
 
+                // Do horizontal to equatorial conversion
                 match horizon_to_equatorial(
                 latitude, longitude, altitude, azimuth, year, month, day, hour, minute, second) {
                     Ok((_ra, _dec)) => {
@@ -128,6 +130,7 @@ impl State {
     }
 }
 
+// Convert string to proper variable type
 fn to_correct(    
 latitude: &String,
 longitude: &String,
@@ -150,6 +153,7 @@ second: &String) -> (f64, f64, f64, f64, i32, i32, i32, i32, i32, i32)
     let mut new_hour = 0;
     let mut new_min = 0;
     let mut new_sec = 0;
+    
     match latitude.parse::<f64>() {
         Ok(val) => new_lat = val,
         Err(_) => {}
@@ -190,6 +194,7 @@ second: &String) -> (f64, f64, f64, f64, i32, i32, i32, i32, i32, i32)
         Ok(val) => new_sec = val,
         Err(_) => {}
     }
+    
     (new_lat, new_long, new_alt, new_azi, new_year, new_month, new_day, new_hour, new_min, new_sec)
 }
 
@@ -232,24 +237,27 @@ fn horizon_to_equatorial(
     
     // Compute Hour Angle (H)
     let dec_deg = dec_rad.to_degrees();
-    
     let sin_dec = altitude.to_radians().sin() * latitude.to_radians().sin() 
         + altitude.to_radians().cos() * latitude.to_radians().cos() * azimuth.to_radians().cos();
-    let dec = sin_dec.asin().to_degrees();
     
+    // calculate declination
+    let dec = sin_dec.asin().to_degrees();
+
+    // Calculate local sidereal time
     let sin_lha = (-azimuth.to_radians().sin() * altitude.to_radians().cos()) / dec.to_radians().cos();
     let cos_lha = (altitude.to_radians().sin() - (latitude.to_radians().sin() * dec.to_radians().sin()))
         / (dec.to_radians().cos() * latitude.to_radians().cos());
     let lha = sin_lha.atan2(cos_lha).to_degrees().rem_euclid(360.0);
 
     println!("LHA: {}", lha);
-    
+
+    // Calculate right ascension
     let ra_deg = (lst_deg - lha).rem_euclid(360.0);
     
     Ok((ra_deg, dec_deg))
 }
 
-/// Compute Julian Day (JD) given a date and time in UTC.
+// Compute Julian Day (JD) given a date and time in UTC.
 fn julian_day(year: i32, month: i32, day: i32, hour: i32, minute: i32, second: i32) -> f64 {
     let y = if month <= 2 { year - 1 } else { year };
     let m = if month <= 2 { month + 12 } else { month };
@@ -265,7 +273,7 @@ fn julian_day(year: i32, month: i32, day: i32, hour: i32, minute: i32, second: i
     jd
 }
 
-/// Compute Greenwich Mean Sidereal Time (GMST) in degrees.
+// Compute Greenwich Mean Sidereal Time (GMST) in degrees.
 fn gmst(jd: f64) -> f64 {
     let t = (jd - 2451545.0) / 36525.0;
     let gmst = 280.46061837 + 360.98564736629 * (jd - 2451545.0) + 0.000387933 * t.powi(2) - (t.powi(3) / 38710000.0);
